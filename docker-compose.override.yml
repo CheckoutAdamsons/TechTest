@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  checkout-paymentgateway-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
+  checkout-paymentgateway-acquiringbanksimulator:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+

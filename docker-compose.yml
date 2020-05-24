@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  checkout-paymentgateway-api:
+    image: ${DOCKER_REGISTRY-}checkoutpaymentgatewayapi
+    build:
+      context: .
+      dockerfile: src/Checkout.PaymentGateway.Api/Dockerfile
+
+  checkout-paymentgateway-acquiringbanksimulator:
+    image: ${DOCKER_REGISTRY-}checkoutpaymentgatewayacquiringbanksimulator
+    build:
+      context: .
+      dockerfile: tools/Checkout.PaymentGateway.AcquiringBankSimulator/Dockerfile
