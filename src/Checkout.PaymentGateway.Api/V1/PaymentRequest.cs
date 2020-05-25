@@ -10,7 +10,7 @@ namespace Checkout.PaymentGateway.Api.V1
 {
     public class PaymentRequest : IValidatableObject
     {
-        // TODO - move the idempotency behavior on this to a separate http header e.g. x-idempotency-key
+        // TODO - move the idempotency behavior on this to a separate http header e.g. x-idempotency-key and generate this internally
         /// <summary>
         /// The payment Id, also used as a key for idempotency
         /// </summary>
