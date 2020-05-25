@@ -33,9 +33,9 @@ namespace Checkout.PaymentGateway.ComponentTests
             {
                 builder.ConfigureTestServices(services =>
                 {
-                    ServiceCollectionServiceExtensions.AddTransient(services, provider => _bankClient.Object);
-                    ServiceCollectionServiceExtensions.AddTransient(services, provider => _paymentStore.Object);
-                    ServiceCollectionServiceExtensions.AddTransient(services, provider => _idempotencyStore.Object);
+                    services.AddTransient(provider => _bankClient.Object);
+                    services.AddTransient(provider => _paymentStore.Object);
+                    services.AddTransient(provider => _idempotencyStore.Object);
                 });
             });
 
