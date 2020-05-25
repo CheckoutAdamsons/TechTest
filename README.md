@@ -10,7 +10,9 @@ Built with
 
 ## Getting Started
 
-- Run docker-compose up
+*Note - the solution is configured to use linux containers, if you're running on windows you can right click the docker desktop taskbar icon and 'switch to linux containers...'*
+
+- Run docker-compose up 
 - Navigate to http://localhost:6200/swagger
 - Hit the Authorize button and enter any value (this will act as your merchant username)
 - Expand the post request and click 'Try it out' (the request should have an example prefilled)
