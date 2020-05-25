@@ -13,7 +13,7 @@ namespace Checkout.PaymentGateway.Api.Attributes
             var enumValue = value as Enum;
 
             if (!Enum.IsDefined(enumValue.GetType(), enumValue))
-                return new ValidationResult($"Invalid value");
+                return new ValidationResult($"Unsupported value in field'{validationContext.DisplayName}'");
 
             return ValidationResult.Success;
         }
