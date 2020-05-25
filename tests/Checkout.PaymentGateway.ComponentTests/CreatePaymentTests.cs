@@ -1,11 +1,3 @@
-using System;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Mime;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Checkout.PaymentGateway.Api;
 using Checkout.PaymentGateway.Api.V1;
 using Checkout.PaymentGateway.Domain.Clients;
@@ -19,6 +11,13 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Newtonsoft.Json;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mime;
+using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Checkout.PaymentGateway.ComponentTests
@@ -30,6 +29,8 @@ namespace Checkout.PaymentGateway.ComponentTests
         private readonly Mock<ISystemClock> _systemClock = new Mock<ISystemClock>();
 
         private readonly HttpClient _client;
+
+        private const string PaymentV1Route = "/api/v1/payments/";
 
         public CreatePaymentTests()
         {
@@ -70,6 +71,18 @@ namespace Checkout.PaymentGateway.ComponentTests
             var response = await PostAsync(TestCreatePaymentRequests.ValidRequest);
 
             response.StatusCode.Should().Be(HttpStatusCode.Created);
+        }
+
+        [Fact]
+        public async Task GivenAPaymentRequest_WhenTheRequestIsValid_ThenReturnPaymentLocation()
+        {
+            SetupAcquiringBankResponse(AcquiringBankPaymentStatus.Authorized);
+
+            var request = TestCreatePaymentRequests.ValidRequest;
+
+            var response = await PostAsync(request);
+
+            response.Headers.Location.OriginalString.Should().Be($"{PaymentV1Route}{request.Id}");
         }
 
         [Fact]
@@ -135,7 +148,7 @@ namespace Checkout.PaymentGateway.ComponentTests
 
         private Task<HttpResponseMessage> PostAsync(PaymentRequest request)
         {
-            return _client.PostAsync("/api/v1/payments", new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, MediaTypeNames.Application.Json));
+            return _client.PostAsync(PaymentV1Route, new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, MediaTypeNames.Application.Json));
         }
     }
 }

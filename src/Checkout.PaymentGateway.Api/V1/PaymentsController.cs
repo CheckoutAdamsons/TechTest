@@ -49,7 +49,7 @@ namespace Checkout.PaymentGateway.Api.V1
                 var result = await _mediator.Send(command, HttpContext.RequestAborted);
 
                 if (result.Success)
-                    return Created($"/api/v1/payments/", result);
+                    return Created($"/api/v1/payments/{result.Id}", result);
 
                 return BadRequest("Payment could not be processed");
             }
