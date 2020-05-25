@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace Checkout.PaymentGateway.Api.Authentication
 {
     /// <summary>
-    /// Simulates authorization - takes the authorization header value and runs with that as the merchants Id. 
+    /// Simulates authorization - takes the authorization header value and runs with that as the merchants Id.
+    /// This could be replaced with something like the OAuth2 client credentials flow for server to server scenarios
     /// </summary>
     public class AuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
