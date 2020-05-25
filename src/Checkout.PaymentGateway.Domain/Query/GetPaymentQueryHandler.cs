@@ -16,7 +16,7 @@ namespace Checkout.PaymentGateway.Domain.Query
 
         public Task<Payment> Handle(GetPaymentQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(_store.Get(request.PaymentId));
+            return Task.FromResult(_store.Get($"{request.MerchantId}{request.PaymentId}"));
         }
     }
-}
+}   

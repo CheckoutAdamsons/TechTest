@@ -40,13 +40,13 @@ namespace Checkout.PaymentGateway.Domain.Commands
                     Cvv = command.Cvv
                 });
             }
-            catch (Exception ex) // here we could raise a PaymentCreatedFailedEvent and in some cases, like a client timeout, have a handler which voids the payment.
+            catch (Exception ex) // here we could raise a PaymentCreatedFailedEvent and in cases like client timeout, have a handler which voids the payment.
             {
                 _logger.LogError(ex, ex.Message);
                 throw;
             }
 
-            await _mediator.Publish(new PaymentCreatedEvent
+            await _mediator.Publish(new PaymentCreatedEvent // TODO :: Add timestamp
             {
                 Id = command.Id,
                 AcquiringBankId = result.Id,
@@ -56,6 +56,7 @@ namespace Checkout.PaymentGateway.Domain.Commands
                 ExpiryYear = command.ExpiryYear,
                 Cvv = command.Cvv,
                 Currency = command.Currency,
+                MerchantId = command.MerchantId,
                 Status = result.Status.ToPaymentStatus()
             });
 

@@ -23,6 +23,7 @@ namespace Checkout.PaymentGateway.ComponentTests
         private readonly HttpClient _client;
 
         private readonly Guid _paymentId;
+        private const string MerchantId = "GetPaymentAcceptanceTest";
 
         public GetPaymentTests()
         {
@@ -35,7 +36,7 @@ namespace Checkout.PaymentGateway.ComponentTests
             });
 
             _client = factory.CreateClient();
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("GetPaymentAcceptanceTest");
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(MerchantId);
 
             _paymentId = Guid.NewGuid();
         }
@@ -55,6 +56,19 @@ namespace Checkout.PaymentGateway.ComponentTests
         {
             var response = await GetAsync(_paymentId);
 
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task GivenAPaymentId_WhenAnotherMerchantHasCreatedATransactionWithTheSameId_ThenReturn404()
+        {
+            SetupPaymentStoreResponse(_paymentId);
+
+            await GetAsync(_paymentId);
+
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("DifferentId");
+
+            var response = await GetAsync(_paymentId);
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -123,7 +137,7 @@ namespace Checkout.PaymentGateway.ComponentTests
         private void SetupPaymentStoreResponse(Guid paymentId, Payment payment = null)
         {
             _paymentStore
-                .Setup(o => o.Get(paymentId))
+                .Setup(o => o.Get($"{MerchantId}{paymentId}"))
                 .Returns(payment ?? TestPayment.ValidPayment(paymentId));
         }
 

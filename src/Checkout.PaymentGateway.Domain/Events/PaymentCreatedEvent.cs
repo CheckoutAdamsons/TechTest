@@ -14,5 +14,6 @@ namespace Checkout.PaymentGateway.Domain.Events
         public int ExpiryMonth { get; set; }
         public Currency Currency { get; set; }
         public PaymentStatus Status { get; set; }
+        public string MerchantId { get; set; }
     }
 }

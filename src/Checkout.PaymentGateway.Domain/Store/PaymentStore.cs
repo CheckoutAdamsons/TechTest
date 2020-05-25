@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Linq;
 using Checkout.PaymentGateway.Domain.Events;
 
@@ -14,7 +13,7 @@ namespace Checkout.PaymentGateway.Domain.Store
 
         public void Append(IPaymentEvent @event)
         {
-            var key = @event.Id.ToString();
+            var key = $"{@event.MerchantId}{@event.Id}";
 
             if (_store.TryGetValue(key, out var eventCollection))
             {
@@ -26,10 +25,8 @@ namespace Checkout.PaymentGateway.Domain.Store
             }
         }
 
-        public Payment Get(Guid paymentId)
+        public Payment Get(string key)
         {
-            var key = paymentId.ToString();
-
             if (_store.TryGetValue(key, out var events))
             {
                 // This is a very simplified version of rebuilding the domain model from stored events
