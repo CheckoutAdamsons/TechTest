@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Checkout.PaymentGateway.Api.Attributes;
+﻿using Checkout.PaymentGateway.Api.Attributes;
 using Checkout.PaymentGateway.Domain.Commands;
 using Checkout.PaymentGateway.Domain.Infrastructure;
 using Checkout.PaymentGateway.Domain.Query;
@@ -9,6 +6,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace Checkout.PaymentGateway.Api.V1
 {
@@ -31,7 +31,7 @@ namespace Checkout.PaymentGateway.Api.V1
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Post([FromBody] PaymentRequest request)
         {
             var command = new CreatePaymentCommand(
@@ -51,7 +51,7 @@ namespace Checkout.PaymentGateway.Api.V1
                 if (result.Success)
                     return Created($"/api/v1/payments/{result.Id}", result);
 
-                return BadRequest("Payment could not be processed");
+                return UnprocessableEntity("Payment could not be processed.");
             }
             catch (IdempotencyViolationException) // TODO - Extract this to a middleware
             {
@@ -65,7 +65,8 @@ namespace Checkout.PaymentGateway.Api.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get([Required, NotEmptyGuid] Guid id)
         {
-            var query = new GetPaymentQuery(id);
+            var merchantId = _httpContext.HttpContext.User.Identity.Name;
+            var query = new GetPaymentQuery(id, merchantId);
 
             // The mediator routes this query to the GetPaymentQueryHandler.cs
             var payment = await _mediator.Send(query);
