@@ -52,7 +52,7 @@ Notes/Assumptions
 
 ## Future
 
-- Transient fault handling - retries could be added with HttpClient Polly policies, or as a mediator behavior similar to the idempotency decorator IdempotencyBehavior.cs)
+- Transient fault handling - retries could be added with HttpClient Polly policies, or as a mediator behavior similar to the idempotency decorator (IdempotencyBehavior.cs)
 - Surface metrics from the gateway API (latency, throughput, saturation, error rate)
 - Health checks
 - As we are using swagger a client library could quickly be generated via swagger-codegen / nswag / swagger-csharp-refit
