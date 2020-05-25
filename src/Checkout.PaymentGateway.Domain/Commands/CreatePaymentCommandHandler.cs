@@ -40,7 +40,7 @@ namespace Checkout.PaymentGateway.Domain.Commands
                     Cvv = command.Cvv
                 });
             }
-            catch (Exception ex)
+            catch (Exception ex) // here we could raise a PaymentCreatedFailedEvent and in some cases, like a client timeout, have a handler which voids the payment.
             {
                 _logger.LogError(ex, ex.Message);
                 throw;
