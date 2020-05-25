@@ -12,6 +12,9 @@ Built with
 
 - Run docker-compose up
 - Navigate to http://localhost:6200/swagger
+- Hit the Authorize button and enter any value (this will act as your merchant username)
+- Expand the post request and click 'Try it out' (the request should have an example prefilled)
+- The POST should return an Id - use the GET endpoint to get the payments state
 
 ## Implementation
 
@@ -21,7 +24,7 @@ The gateway API consists of
 - Request validation for the /POST e.g. Luhn, Expiry validation
 - Mediator which routes the endpoint command/queries to corresponding handlers
 - In proc event publishing via Mediator, created events are handled/stored to build payments aggregates.
-- A simulated auth scheme to distinguish between different merchants
+- An authorization scheme to simulate different merchants
 - Idempotency checking for commands (the merchantId / paymentId act as the idempotency key) this should prevent race conditions from the same request submitted multiple times concurrently.
 - A Refit generated client for the acquiring bank API
 - Swagger for documentation and examples. Auth is configured for ease of consumption.
@@ -31,6 +34,12 @@ The Acquiring bank simulator consist of
 
 - A controller for the payments resource with a POST endpoint.
 - Swagger documentation
+- Logic to match on the amount provided and return a specific response code, currently this is as follows...
+
+|      Amount     |     Response    |
+|-----------------|:---------------:|
+| 999             |    Declined     |
+| Any other value |    Authorized   |
 
 Notes/Assumptions
 
@@ -41,6 +50,7 @@ Notes/Assumptions
 
 ## Future
 
+- Transient fault handling - retries could be added with HttpClient Polly policies, or as a mediator behavior similar to the idempotency decorator IdempotencyBehavior.cs)
 - Surface metrics from the gateway API (latency, throughput, saturation, error rate)
 - Health checks
 - As we are using swagger a client library could quickly be generated via swagger-codegen / nswag / swagger-csharp-refit
