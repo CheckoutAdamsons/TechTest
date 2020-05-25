@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -128,6 +129,32 @@ namespace Checkout.PaymentGateway.ComponentTests
 
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
+
+        [Theory]
+        [MemberData(nameof(InvalidCardPans))]
+        public async Task GivenAPaymentRequest_WhenTheCardFailsLuhnCheck_ThenReturn400(string cardPan)
+        {
+            SetupAcquiringBankResponse(AcquiringBankPaymentStatus.Authorized);
+
+            var response = await PostAsync(TestCreatePaymentRequests.Configure(request =>
+            {
+                request.CardNumber = cardPan;
+            }));
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        public static IEnumerable<object[]> InvalidCardPans => new List<object[]>
+        {
+            new[] { "0" }, // weirdly this passes [CreditCard] validation
+            new[] { "1" },
+            new[] { "2" },
+            new[] { "111111111111111111111111111" }, // This too (27 digits), looks like a bug
+            new[] { "-1" },
+            new[] { "Hello World" },
+            new[] { "11111111111111" },
+            new[] { "491509023274655" }
+        };
 
         private void SetupAcquiringBankResponse(AcquiringBankPaymentStatus status)
         {

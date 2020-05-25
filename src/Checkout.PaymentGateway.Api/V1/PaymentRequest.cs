@@ -29,7 +29,7 @@ namespace Checkout.PaymentGateway.Api.V1
         /// The card number 
         /// </summary>
         /// <example>5555555555554444</example>
-        [Required, CreditCard]
+        [Required, CreditCard, StringLength(19, MinimumLength = 8)] // TODO : Replace credit card attribute
         public string CardNumber { get; set; }
 
         /// <summary>
