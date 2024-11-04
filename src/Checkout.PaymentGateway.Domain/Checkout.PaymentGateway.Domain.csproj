@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="8.0.1" />
-    <PackageReference Include="Refit" Version="5.1.67" />
+    <PackageReference Include="Refit" Version="8.0.0" />
     <PackageReference Include="Refit.HttpClientFactory" Version="5.1.67" />
   </ItemGroup>
 
